@@ -2,11 +2,15 @@
 *    simple functional struture for the Exploring Raspberry Pi book
 *
 *    This program uses GPIO4 with a connected LED and can be executed:
-*         makeLED setup
-*         makeLED on
-*         makeLED off
-*         makeLED status
-*         makeLED close
+*    Changed name of program to LEDblink 4/15/2017.
+*         LEDblink setup
+*         LEDblink on
+*         LEDblink off
+*         LEDblink status
+*         LEDblink close
+*
+*    Modified the code by adding a blink function just to see if I
+*    could do it.  Duane Shelton 4/15/2017. 
 */
 
 #include<stdio.h>
@@ -24,14 +28,24 @@ void writeGPIO(char filename[], char value[]){
    fclose(fp);                         // close the file using fp
 }
 
+void blink(void) {
+   int i;
+   for (i = 0; i <= 10; i++) {
+       writeGPIO(GPIO4_PATH "value", "1");
+       usleep(500000);
+       writeGPIO(GPIO4_PATH "value", "0");
+       usleep(500000);
+   }
+}
+
 int main(int argc, char* argv[]){
    if(argc!=2){                        // program name is argument 1
-      printf("Usage is makeLEDC and one of:\n");
-      printf("   setup, on, off, status, or close\n");
-      printf(" e.g. makeLEDC on\n");
+      printf("Usage is LEDblink and one of:\n");
+      printf("   setup, on, off, blink, status, or close\n");
+      printf(" e.g. LEDblink on\n");
       return 2;                        // invalid number of arguments
    }
-   printf("Starting the makeLED program\n");
+   printf("Starting the LEDblink program\n");
    if(strcmp(argv[1],"setup")==0){
       printf("Setting up the LED on the GPIO\n");
       writeGPIO(GPIO_SYSFS "export", GPIO_NUMBER);
@@ -50,6 +64,10 @@ int main(int argc, char* argv[]){
       printf("Turning the LED off\n");
       writeGPIO(GPIO4_PATH "value", "0");
    }
+   else if (strcmp(argv[1],"blink")==0){
+      printf("Blinking the LED\n");
+      blink();
+   }
    else if (strcmp(argv[1],"status")==0){
       FILE* fp;        // see writeGPIO function above for description
       char line[80], fullFilename[100];
@@ -63,7 +81,7 @@ int main(int argc, char* argv[]){
    else{
       printf("Invalid command!\n");
    }
-   printf("Finished the makeLED Program\n");
+   printf("Finished the LEDblink Program\n");
    return 0;
 }
 
